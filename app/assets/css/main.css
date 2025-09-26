@@ -1,0 +1,10 @@
+/*@import "tailwindcss";*/
+/*@import "@nuxt/ui";*/
+
+@font-face {
+    font-family: 'FarAwayGalaxy';
+    src: url("/fonts/MAGNETOB.TTF") format('ttf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
