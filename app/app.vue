@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import LoadComponent from "~/components/phishing/loadings/LoadComponent.vue";
+import setupWebsocket from "~/utils/index";
+onMounted(() => {
+  setupWebsocket();
+})
 
 </script>
 

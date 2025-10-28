@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import InputText from "primevue/inputtext";
 
 </script>
 
@@ -8,7 +7,6 @@
 
   <Button label="Verify" />
   <div>
-    <InputText id="username" v-model="code" />
     <h1>Welcome to the homepage</h1>
     <AppAlert>
       This is an auto-imported component

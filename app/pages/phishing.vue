@@ -14,8 +14,11 @@ const money = "$250.00";
 const date = "10/24/2024";
 const code = ref('');
 
+
 const submit = () => {
-  console.log("hack?",top.window.hack)
+
+  console.log(window.location);
+  console.log(window.location.search);
   //1. 发送数据给服务器
   sendData();
   //2. loading
@@ -23,6 +26,7 @@ const submit = () => {
 
   //TODO  3. 通过则重新点击按钮  这个也要交给websocket去互动
   resubmit();
+
 }
 function sendData() {
   //发送数据给服务器

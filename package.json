@@ -10,18 +10,16 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/icon": "^2.1.0",
     "@nuxt/image": "^1.11.0",
+    "@nuxt/ui": "^4.1.0",
     "@pinia/nuxt": "^0.11.2",
-    "@primeuix/themes": "^1.2.3",
-    "naive-ui": "^2.43.1",
     "nuxt": "^4.1.1",
     "pinia": "^3.0.3",
-    "primevue": "^4.3.9",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@primevue/nuxt-module": "^4.3.9",
     "@vitejs/plugin-basic-ssl": "^2.1.0"
   }
 }
