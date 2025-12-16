@@ -54,6 +54,7 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { addOnMessage, removeOnMessage, sendMsg } from '~/utils';
 import type { WebSocketMessage } from '~/utils';
+import { format } from 'date-fns';
 
 interface Message {
   type: Enum;

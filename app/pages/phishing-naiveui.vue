@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LoadStripe from "~/components/phishing/loadings/LoadStripe.vue";
 import {useLoadingStore} from "~/stores/loading";
-import { NButton,NInput } from 'naive-ui'
+// import { NButton,NInput } from 'naive-ui'
 
 definePageMeta({
   layout: false,
@@ -31,8 +31,8 @@ const code = ref("");
       <p>You are paying <span class="strong">{{bank}}</span> the amount of <span class="strong">{{money}}</span> on <span class="strong">{{date}}.</span></p>
 
       <h4>Enter your code below:</h4>
-      <n-button>点击我</n-button>
-      <n-input v-model:value="code" placeholder="Enter code" type="text" style="width: 100%;"></n-input>
+<!--      <n-button>点击我</n-button>-->
+<!--      <n-input v-model:value="code" placeholder="Enter code" type="text" style="width: 100%;"></n-input>-->
 <!--      <div><input type="text" v-model="code"/></div>-->
 
       <button class="btn btn-a">SUBMIT</button>

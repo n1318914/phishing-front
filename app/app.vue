@@ -8,14 +8,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <NuxtLayout>
+  <UApp>
+<!--    <NuxtLayout>-->
       <NuxtPage />
-    </NuxtLayout>
+<!--    </NuxtLayout>-->
 
     <!--模态框-->
     <load-component></load-component>
-  </div>
+  </UApp>
 </template>
 
 <style>
