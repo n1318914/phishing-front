@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 
 export const useLoadingStore = defineStore('loading', {
     state: () => ({
-        stripe: false,
+        stripe: true,
         paypal: false
     }),
     actions: {

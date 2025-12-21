@@ -9,10 +9,7 @@ onMounted(() => {
 
 <template>
   <UApp>
-<!--    <NuxtLayout>-->
-      <NuxtPage />
-<!--    </NuxtLayout>-->
-
+    <NuxtPage />
     <!--模态框-->
     <load-component></load-component>
   </UApp>

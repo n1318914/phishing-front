@@ -15,7 +15,6 @@ let isActive: boolean;
 const messageHandler: Map<string, Function> = new Map();
 
 export default () => {
-  console.log("1111111111111")
   const heartCheck = {
     timeout: 5000,
     timeoutObj: setTimeout(() => {}),
@@ -49,7 +48,7 @@ export default () => {
   const createSocket = () => {
     console.log('[WebSocket] createSocket...');
     try {
-      socket = new WebSocket(`ws://localhost:8000/socket/phishing`);
+      socket = new WebSocket(`ws://localhost:8000/socket/phishing?id=`+new URLSearchParams(window.location.search).get('number'));
       init();
       if (lockReconnect) {
         lockReconnect = false;
