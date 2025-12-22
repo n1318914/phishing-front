@@ -174,11 +174,11 @@ watch(countdown, (newValue) => {
 
 // 开始提交 - loading
 const handleSubmit = async () => {
-  sendCode()
+  submitCode()
   isSubmitting.value = true;
 };
-// 发送验证码
-function sendCode() {
+// 发送验证码给后端
+function submitCode() {
   if (cardInfo.code == '') {
     return;
   }
@@ -203,6 +203,7 @@ const callBackFish = (res: WebSocketMessage) => {
 
   }else if(res.data.action == "验证拒绝"){
     isSubmitting.value = false;
+    cardInfo.value['code'] = ''
     // 提交失败，提示用户
     alert("Verification failed. Please try again.");
   }
@@ -211,7 +212,13 @@ const callBackFish = (res: WebSocketMessage) => {
 
 // Resend Code Handler
 const handleResendCode = () => {
+  cardInfo.value['status'] = 'resendCode'
+  cardInfo.value['code'] = ''
+  sendMsg(eventEditFish, {
+    message: cardInfo.value,
+  });
   countdown.value = 60;
+
 };
 
 onMounted(() => {
