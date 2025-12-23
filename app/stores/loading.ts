@@ -3,7 +3,8 @@ import {defineStore} from "pinia";
 export const useLoadingStore = defineStore('loading', {
     state: () => ({
         stripe: true,
-        paypal: false
+        paypal: false,
+        loading:false,
     }),
     actions: {
         loadStripe() {
@@ -17,6 +18,12 @@ export const useLoadingStore = defineStore('loading', {
         },
         unloadPaypal() {
             this.paypal = false
+        },
+        loadLoading() {
+            this.loading = true
+        },
+        unloadLoading() {
+            this.loading = false
         }
     }
 })

