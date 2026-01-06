@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
         method: 'POST',
         body: new URLSearchParams({
             action: 'bin_checker',
-            nonce: '72b1ab0da1', // 隐藏敏感参数
+            nonce: '41c13adb7f', // 隐藏敏感参数
             bin
         }),
     });

