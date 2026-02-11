@@ -1,0 +1,1 @@
+import{f as o,D as s,c as t,t as a,E as n,o as r}from"./CRCXkJG4.js";const c={id:"abc"},d=o({__name:"[id]",setup(i){const e=s();return console.log(e),(_,p)=>(r(),t("div",c," User "+a(n(e).params.id),1))}});export{d as default};
