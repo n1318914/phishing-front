@@ -1,1 +1,0 @@
-import{f as o,m as s,c as t,t as a,k as n,o as r}from"./CRSeo0MN.js";const c={id:"abc"},u=o({__name:"[id]",setup(i){const e=s();return console.log(e),(_,p)=>(r(),t("div",c," User "+a(n(e).params.id),1))}});export{u as default};
