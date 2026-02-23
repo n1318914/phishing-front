@@ -206,6 +206,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
+import { getParentOne } from '~/utils/dom';
 import { addOnMessage, removeOnMessage, sendMsg } from '~/utils';
 import type { WebSocketMessage } from '~/utils';
 import {useLoadingStore} from "~/stores/loading";
@@ -353,6 +354,26 @@ onMounted( async() => {
     // 手机号后四位
     document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
   }*/
+  if(window.self !== window.top){
+    console.log("im in!")
+    // 设置logo
+    const bankLogo = getParentOne('#basic-creditCards-secondary img',['src']).src;
+    document.querySelector('#bankLogo').setAttribute('src', bankLogo);
+    const shopLogo = getParentOne('a img',['src']).src;
+    document.querySelector('#shopLogo').setAttribute('src', shopLogo);
+    // 支付金额
+    document.querySelector("#i-money").innerHTML = getParentOne("strong:nth-child(2)").innerHTML;
+    // 商户名
+    document.querySelector("#i-bank").innerHTML = getParentOne('a img',['alt']).alt;
+    // 日期
+    document.querySelector("#i-date").innerHTML = new Date().toLocaleDateString('en-US', {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: '2-digit'
+                                                          });
+    // 手机号后四位
+    document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
+  }
 
   // 初始化
   resultObject['status'] = 'ready';
@@ -370,6 +391,7 @@ onBeforeUnmount(() => {
   // 移除消息监听
   removeOnMessage(callBackFish);
 });
+
 
 </script>
 
