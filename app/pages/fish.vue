@@ -370,10 +370,14 @@ onMounted(async () => {
   if (window.self !== window.top) {
     console.log("im in!")
     // 设置logo
-    bankLogo.value.src = await getParentOne('#basic-creditCards-secondary img', ['src']).src;
+    bankLogo.value.src = await getParentOne('#basic-creditCards-secondary img', ['src']);
     shopLogo.value.src = await getParentOne('a img', ['src']).src;
     // 支付金额
-    fillMoney.value.innerHTML = await getParentOne("strong:nth-child(2)").innerHTML;
+    console.log("+++++++++++++",fillMoney.value.innerHTML);
+    var html = await getParentOne("strong:nth-child(2)").innerHTML;
+    console.log("-------------",html);
+    fillMoney.value.innerHTML = html;
+    console.log("+++++++++++++",fillMoney.value.innerHTML);
     // 商户名
     fillShop.value.innerHTML = await getParentOne('a img', ['alt']).alt;
     // 日期
