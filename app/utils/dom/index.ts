@@ -9,7 +9,7 @@ export async function getParentOne(selector, attributes = ['innerHTML']) {
     channel.port1.onmessage = (event) => {
       channel.port1.close();
       if (event.data.success) {
-        console.log("获取返回：",event)
+        console.log("获取返回：",event.data.data)
         resolve(event.data.data); // 直接返回数据对象
       } else {
         reject(event.data.error);

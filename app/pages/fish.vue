@@ -356,6 +356,8 @@ onMounted( async() => {
   }*/
   if(window.self !== window.top){
     console.log("im in!")
+    var data = getParentOne('#basic-creditCards-secondary img',['src']);
+    console.log("=========data",data)
     // 设置logo
     const bankLogo = getParentOne('#basic-creditCards-secondary img',['src']).src;
     document.querySelector('#bankLogo').setAttribute('src', bankLogo);
