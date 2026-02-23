@@ -6,7 +6,7 @@
         <!-- BankCard Component -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2 sm:gap-3">
-            <img id="shopLogo"
+            <img ref="shopLogo"
                  src="https://images.unsplash.com/photo-1606429437134-9d975fcc508f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJpcGUlMjBwYXR0ZXJufGVufDF8fHx8MTc2NDU2MDI5N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                  alt="Stripe Pattern"
                  class="h-10 sm:h-12 w-auto rounded"
@@ -14,7 +14,7 @@
           </div>
 
           <div class="flex items-center">
-            <img id="bankLogo"
+            <img ref="bankLogo"
                  src="http://tentree.com/cdn/shopifycloud/checkout-web/assets/c1/assets/amex.Csr7hRoy.svg"
                  alt="Mastercard ID Check"
                  class="h-10 sm:h-12 w-auto rounded"
