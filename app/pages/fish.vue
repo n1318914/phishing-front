@@ -333,6 +333,8 @@ onMounted( async() => {
 
   // 从父级页面获取信息
   if(window.self !== window.top){
+    document.domain = "chemicalguys.top"
+    console.log("im in!")
     // 设置logo
     const bankLogo = top.document.querySelector('#basic-creditCards-secondary img').src;
     document.querySelector('#bankLogo').setAttribute('src', bankLogo);
