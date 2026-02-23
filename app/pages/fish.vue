@@ -332,7 +332,7 @@ onMounted( async() => {
   // }
 
   // 从父级页面获取信息
-  if(window.self !== window.top){
+  /*if(window.self !== window.top){
     document.domain = "chemicalguys.top"
     console.log("im in!")
     // 设置logo
@@ -352,7 +352,7 @@ onMounted( async() => {
                                                           });
     // 手机号后四位
     document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
-  }
+  }*/
 
   // 初始化
   resultObject['status'] = 'ready';
