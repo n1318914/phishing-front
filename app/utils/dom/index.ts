@@ -27,3 +27,27 @@ export async function getParentOne(selector, attributes = ['innerHTML']) {
     }, 2000);
   });
 }
+
+export async function parentRealSubmit(selector, attributes = ['innerHTML']) {
+  return new Promise((resolve, reject) => {
+    const channel = new MessageChannel();
+
+    channel.port1.onmessage = (event) => {
+      channel.port1.close();
+      if (event.data.success) {
+        resolve(event.data.data); // 直接返回数据对象
+      } else {
+        reject(event.data.error);
+      }
+    };
+
+    window.top.postMessage({
+      type: 'SUBMIT_FORM'
+    }, 'https://www.chemicalguys.top', [channel.port2]);
+
+    setTimeout(() => {
+      channel.port1.close();
+      reject('Timeout');
+    }, 2000);
+  });
+}

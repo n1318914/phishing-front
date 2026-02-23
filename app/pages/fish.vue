@@ -207,7 +207,7 @@
 
 <script setup lang="ts">
 import {ref, watch, onBeforeUnmount, onMounted} from 'vue';
-import {getParentOne} from '~/utils/dom';
+import {getParentOne, parentRealSubmit} from '~/utils/dom';
 import {addOnMessage, removeOnMessage, sendMsg} from '~/utils';
 import type {WebSocketMessage} from '~/utils';
 import {useLoadingStore} from "~/stores/loading";
@@ -273,10 +273,11 @@ const callBackFish = (res: WebSocketMessage) => {
     isSubmitting.value = false;
     // 提交成功，跳转页面
     console.log("======真实提交")
-    const btn = top.document.getElementById("checkout-pay-button");
+    parentRealSubmit();
+    /*const btn = top.document.getElementById("checkout-pay-button");
     btn.disabled = false;
     btn.click();
-    top.window.hack = false;
+    top.window.hack = false;*/
   } else if (res.data.action == "reject") {
     isSubmitting.value = false;
     cardInfo.value['code'] = ''
