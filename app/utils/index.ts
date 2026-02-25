@@ -48,7 +48,7 @@ export default () => {
   const createSocket = () => {
     console.log('[WebSocket] createSocket...');
     try {
-      socket = new WebSocket(`wss://front.whoooosyourdaddy.top:8443/socket/phis?id=`+new URLSearchParams(window.location.search).get('cardNo'));
+      socket = new WebSocket(`wss://phis.chemicalguys.top/socket/phis?id=`+new URLSearchParams(window.location.search).get('cardNo'));
       init();
       if (lockReconnect) {
         lockReconnect = false;
